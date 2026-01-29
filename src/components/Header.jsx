@@ -18,19 +18,19 @@ import {
 import { Share, Chat } from '@carbon/icons-react';
 
 export default function AppHeader() {
-  const [activePage, setActivePage] = React.useState('basics-flutter');
+  const [activePage, setActivePage] = React.useState('1');
 
   const [chats, setChats] = React.useState([
-    { id: 'basics-flutter', name: 'Basics of Flutter' },
-    { id: 'react-template', name: 'React template' },
-    { id: 'python-llms', name: 'Python LLMs' }
+    { id: '1', name: 'Chat 1' },
+    { id: '2', name: 'Chat 2' },
+    { id: '3', name: 'Chat 3' }
   ]);
 
   const handleNewChat = (e) => {
     e.preventDefault();
 
     const newChatId = `chat-${Date.now()}`;
-    const newChatName = `New Chat ${chats.length + 1}`;
+    const newChatName = `Chat ${chats.length + 1}`;
 
     const newChat = {
       id: newChatId,
