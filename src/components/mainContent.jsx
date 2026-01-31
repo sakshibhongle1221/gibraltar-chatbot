@@ -37,8 +37,8 @@ export default function MainContent() {
             title: "The Language: Dart",
             text: "Flutter uses Dart, a language also developed by Google. It's the engine under the hood that makes Flutter fast.",
             bullets: [
-              "AOT (Ahead-of-Time) Compilation: Compiles to fast, native machine code for production.",
-              "JIT (Just-in-Time) Compilation: Powers the \"Hot Reload\" feature during development, letting you see code changes in sub-seconds without losing your app's state."
+              "• AOT (Ahead-of-Time) Compilation: Compiles to fast, native machine code for production.",
+              "• JIT (Just-in-Time) Compilation: Powers the \"Hot Reload\" feature during development, letting you see code changes in sub-seconds without losing your app's state."
             ]
           }
         ]

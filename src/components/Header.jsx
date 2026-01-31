@@ -21,9 +21,9 @@ export default function AppHeader() {
   const [activePage, setActivePage] = React.useState('1');
 
   const [chats, setChats] = React.useState([
-    { id: '1', name: 'Chat 1' },
+    { id: '1', name: 'Chat 3' },
     { id: '2', name: 'Chat 2' },
-    { id: '3', name: 'Chat 3' }
+    { id: '3', name: 'Chat 1' }
   ]);
 
   const handleNewChat = (e) => {
@@ -37,7 +37,7 @@ export default function AppHeader() {
       name: newChatName
     };
 
-    setChats(prevChats => [...prevChats, newChat]);
+    setChats(prevChats => [newChat,...prevChats]);
 
     setActivePage(newChatId);
   };
@@ -76,9 +76,9 @@ export default function AppHeader() {
         >
           <SideNavItems>
             <HeaderSideNavItems hasDivider={true}>
-              <HeaderMenuItem href="#">Source Code</HeaderMenuItem>
-              <HeaderMenuItem href="#">My Github</HeaderMenuItem>
-              <HeaderMenuItem href="#">Resume</HeaderMenuItem>
+              <HeaderMenuItem href="https://github.com/sakshibhongle1221/gibraltar-chatbot.git">Source Code</HeaderMenuItem>
+              <HeaderMenuItem href="https://github.com/sakshibhongle1221">My Github</HeaderMenuItem>
+              <HeaderMenuItem href="https://drive.google.com/drive/folders/1PoGiXsmaDdrHvDwfDZXgnQQdkR52sy1C">Resume</HeaderMenuItem>
             </HeaderSideNavItems>
 
             <SideNavLink 
