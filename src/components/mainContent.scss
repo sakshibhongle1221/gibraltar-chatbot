@@ -1,0 +1,149 @@
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/type' as *;
+@use '@carbon/react/scss/colors' as *;
+@use '@carbon/react/scss/themes' as *;
+@use '@carbon/react/scss/theme' as *;
+
+.cds--content {
+  padding-bottom: 0px !important;
+  padding-top: 0px !important;
+}
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 3rem);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-06;
+  
+  @media (min-width: 66rem) {
+    padding-left: 224px;
+    padding-right: 224px;
+  }
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-05;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+
+  &--user {
+    justify-content: flex-end;
+    padding-top: 136px;
+    padding-right: 8px;
+  }
+
+  &--bot {
+    justify-content: flex-start;
+  }
+
+  &__avatar {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &--bot {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-top: $spacing-02;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    max-width: calc(100% - 4rem);
+  }
+
+  &--user .message__content {
+    flex: unset;
+    text-align: right;
+  }
+
+  &__text {
+    @include type-style('body-01');
+    color: $text-primary;
+    margin: 0;
+  }
+
+  &--user .message__text {
+    color: $text-secondary;
+  }
+
+  &__heading {
+    @include type-style('heading-compact-01');
+    color: $text-primary;
+    margin-bottom: $spacing-03;
+  }
+
+  &__list {
+    padding-left: $spacing-05;
+    margin: $spacing-03 0;
+
+    li {
+      @include type-style('body-01');
+      color: $text-primary;
+      margin-bottom: $spacing-04;
+      line-height: 1.6;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-02;
+
+    .cds--icon-button {
+      color: $icon-secondary;
+
+      &:hover {
+        color: $icon-primary;
+      }
+    }
+  }
+}
+
+.chat-input {
+  padding: $spacing-05;
+  
+  @media (min-width: 66rem) {
+    margin-left: 224px;
+    margin-right: 224px;
+  }
+
+  &__container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .cds--text-area__wrapper {
+    textarea {
+      padding: 16px;
+      background-color: $field-01;
+      min-height: 5rem;
+    }
+  }
+
+  &__helper {
+    margin: $spacing-03 0;
+    color: $text-helper;
+  }
+
+  &__submit {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: $spacing-04;
+  }
+}

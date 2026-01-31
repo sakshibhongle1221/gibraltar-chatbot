@@ -1,13 +1,16 @@
 import React from 'react';
+import { Content } from '@carbon/react';
 import AppHeader from './components/Header';
+import MainContent from "./components/mainContent.jsx";
 import '@carbon/styles/css/styles.css';
-//import { Theme } from '@carbon/react';
-
 
 export default function App() {
   return (
-    <div>
-    <AppHeader />
-</div>
+    <>
+      <AppHeader />
+      <Content>
+        <MainContent />
+      </Content>
+    </>
   );
 }

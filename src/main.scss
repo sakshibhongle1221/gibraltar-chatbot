@@ -1,7 +1,16 @@
-@use '@carbon/react/scss/theme' with ($theme: theme.$white);
+//@use '@carbon/react/scss/theme' with ($theme: theme.$white);
 
-@use '@carbon/react';
+//@use '@carbon/react';
 
-@use '@carbon/react/scss/spacing' as *;
-@use '@carbon/react/scss/type' as *;
-@use '@carbon/react/scss/colors' as *;
+//@use '@carbon/react/scss/spacing' as *;
+//@use '@carbon/react/scss/type' as *;
+//@use '@carbon/react/scss/colors' as *;
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: 0;
+  overflow: hidden;
+}
