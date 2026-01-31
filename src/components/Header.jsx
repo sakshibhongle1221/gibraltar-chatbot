@@ -59,9 +59,9 @@ export default function AppHeader() {
           Gibraltar
         </HeaderName>
         <HeaderNavigation aria-label="Main navigation">
-          <HeaderMenuItem href="#">Source Code</HeaderMenuItem>
-          <HeaderMenuItem href="#">My Github</HeaderMenuItem>
-          <HeaderMenuItem href="#">Resume</HeaderMenuItem>
+          <HeaderMenuItem href="https://github.com/sakshibhongle1221/gibraltar-chatbot.git">Source Code</HeaderMenuItem>
+          <HeaderMenuItem href="https://github.com/sakshibhongle1221">My Github</HeaderMenuItem>
+          <HeaderMenuItem href="https://drive.google.com/drive/folders/1PoGiXsmaDdrHvDwfDZXgnQQdkR52sy1C">Resume</HeaderMenuItem>
         </HeaderNavigation>
         <HeaderGlobalBar>
           <HeaderGlobalAction aria-label="Share" tooltipAlignment="end">
