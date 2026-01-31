@@ -65,7 +65,7 @@
 
   &__content {
     flex: 1;
-    max-width: calc(100% - 4rem);
+    max-width: calc(100% - 4rem);   
   }
 
   &--user .message__content {
@@ -80,11 +80,11 @@
   }
 
   &--user .message__text {
-    color: $text-secondary;
+    color: $text-primary;
   }
 
   &__heading {
-    @include type-style('heading-compact-01');
+    @include type-style('body-01');
     color: $text-primary;
     margin-bottom: $spacing-03;
   }
