@@ -10,7 +10,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   Copy,
-  Share
+  Share,
+  Checkmark
 } from '@carbon/icons-react';
 import './mainContent.scss';
 import { botResponses } from './botResponses';
@@ -20,10 +21,33 @@ const getRandomResponse = () => {
   return botResponses[randomIndex];
 };
 
+const formatMessageForCopy = (content) => {
+  let text = '';
+  if (content.paragraphs) {
+    text += content.paragraphs.join('\n\n');
+  }
+  if (content.sections) {
+    content.sections.forEach((section) => {
+      text += `\n\n${section.title}\n`;
+      text += section.text;
+
+      if (section.bullets) {
+        text += '\n';
+        section.bullets.forEach((bullet) => {
+          text += `\n• ${bullet}`;
+        });
+      }
+    });
+  }
+
+  return text.trim();
+};
+
 export default function MainContent() {
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
+  const [copiedMessage, setCopiedMessage] = useState(null);
 
   const initialBotMessage = {
     id: Date.now(),
@@ -46,6 +70,20 @@ export default function MainContent() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleCopy = async (messageId, content) => {
+    const textToCopy = formatMessageForCopy(content);
+
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopiedMessage(messageId);
+      setTimeout(() => {
+        setCopiedMessage(null);
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    }
+  };
 
   const handleSubmit = () => {
     if (inputValue.trim()) {
@@ -127,13 +165,18 @@ export default function MainContent() {
                           <ThumbsDown size={16} />
                         </IconButton>
                         <IconButton
-                          kind="ghost"
-                          size="sm"
-                          label="Copy"
-                          align="bottom"
+                        kind="ghost"
+                        size="sm"
+                        label={copiedMessage === message.id ? "Copied!" : "Copy"}
+                        align="bottom"
+                        onClick={() => handleCopy(message.id, message.content)}
                         >
+                        {copiedMessage === message.id ? (
+                          <Checkmark size={16} />
+                        ) : (
                           <Copy size={16} />
-                        </IconButton>
+                        )}
+                      </IconButton>
                         <IconButton
                           kind="ghost"
                           size="sm"
