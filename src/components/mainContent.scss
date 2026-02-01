@@ -18,7 +18,7 @@
   flex: 1;
   overflow-y: auto;
   padding: $spacing-06;
-  
+
   @media (min-width: 66rem) {
     padding-left: 224px;
     padding-right: 224px;
@@ -35,8 +35,8 @@
 
   &--user {
     justify-content: flex-end;
-    padding-top: 136px;
-    padding-right: 8px;
+    padding-top: $spacing-03;
+    padding-right: $spacing-03;
   }
 
   &--bot {
@@ -44,8 +44,8 @@
   }
 
   &__avatar {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: $spacing-06;
+    height: $spacing-06;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
@@ -57,15 +57,15 @@
     }
 
     &--bot {
-      width: 1.5rem;
-      height: 1.5rem;
+      width: $spacing-06;
+      height: $spacing-06;
       margin-top: $spacing-02;
     }
   }
 
   &__content {
     flex: 1;
-    max-width: calc(100% - 4rem);   
+    max-width: calc(100% - 4rem);
   }
 
   &--user .message__content {
@@ -92,6 +92,7 @@
   &__list {
     padding-left: $spacing-05;
     margin: $spacing-03 0;
+    list-style-type: disc;
 
     li {
       @include type-style('body-01');
@@ -116,8 +117,9 @@
 }
 
 .chat-input {
+  flex-shrink: 0;
   padding: $spacing-05;
-  
+
   @media (min-width: 66rem) {
     margin-left: 224px;
     margin-right: 224px;
@@ -130,13 +132,14 @@
 
   .cds--text-area__wrapper {
     textarea {
-      padding: 16px;
+      padding: $spacing-05;
       background-color: $field-01;
       min-height: 5rem;
     }
   }
 
   &__helper {
+    @include type-style('helper-text-01');
     margin: $spacing-03 0;
     color: $text-helper;
   }
