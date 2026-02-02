@@ -11,7 +11,9 @@ import {
   ThumbsDown,
   Copy,
   Share,
-  Checkmark
+  Checkmark,
+  Reply,
+  AiRecommend
 } from '@carbon/icons-react';
 import './mainContent.scss';
 import { botResponses } from './botResponses';
@@ -43,23 +45,60 @@ const formatMessageForCopy = (content) => {
   return text.trim();
 };
 
+function HoverableTextBlock({ children, onReply, onAiRecommend }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      className={`hoverable-block ${isHovered ? 'hoverable-block--active' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="hoverable-block__content">
+        {children}
+      </div>
+      {isHovered && (
+        <div className="hoverable-block__actions">
+          <IconButton
+            kind="ghost"
+            size="sm"
+            label="Reply"
+            align="left"
+            onClick={onReply}
+          >
+            <Reply size={16} />
+          </IconButton>
+          <IconButton
+            kind="ghost"
+            size="sm"
+            label="AI Recommend"
+            align="left"
+            onClick={onAiRecommend}
+          >
+            <AiRecommend size={16} />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function MainContent() {
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const [copiedMessage, setCopiedMessage] = useState(null);
 
-  const initialBotMessage = {
-    id: Date.now(),
-    type: 'bot',
-    content: {
-      paragraphs: ['Hi user what do you want to learn?'],
-      sections: []
-    },
-    avatar: 'https://static.thenounproject.com/png/2781734-512.png'
-  };
-
   useEffect(() => {
+    const initialBotMessage = {
+      id: Date.now(),
+      type: 'bot',
+      content: {
+        paragraphs: ['Hi user what do you want to learn?'],
+        sections: []
+      },
+      avatar: 'https://static.thenounproject.com/png/2781734-512.png'
+    };
     setMessages([initialBotMessage]);
   }, []);
 
@@ -83,6 +122,14 @@ export default function MainContent() {
     } catch (err) {
       console.error('Failed to copy text:', err);
     }
+  };
+
+  const handleReply = (text) => {
+    setInputValue(text);
+  };
+
+  const handleAiRecommend = () => {
+    
   };
 
   const handleSubmit = () => {
@@ -117,24 +164,34 @@ export default function MainContent() {
       <Layer className="chat-messages">
         <Stack gap={6}>
           {messages.map((message) => (
-              <div key={message.id} className={`message message--${message.type}`}>
-                {message.type === 'bot' && (
-                  <div className="message__avatar message__avatar--bot">
-                    <img src={message.avatar} alt="Gibraltar" />
-                  </div>
-                )}
+            <div key={message.id} className={`message message--${message.type}`}>
+              {message.type === 'bot' && (
+                <div className="message__avatar message__avatar--bot">
+                  <img src={message.avatar} alt="Gibraltar" />
+                </div>
+              )}
 
-                <div className="message__content">
-                  {message.type === 'user' ? (
-                    <p className="message__text">{message.content}</p>
-                  ) : (
-                    <Stack gap={5}>
-                      {message.content.paragraphs.map((para, idx) => (
-                        <p key={idx} className="message__text">{para}</p>
-                      ))}
-                      {message.content.sections &&(
-                      message.content.sections.map((section, idx) => (
-                        <div key={idx}>
+              <div className="message__content">
+                {message.type === 'user' ? (
+                  <p className="message__text">{message.content}</p>
+                ) : (
+                  <Stack gap={5}>
+                    {message.content.paragraphs.map((para, idx) => (
+                      <HoverableTextBlock
+                        key={idx}
+                        onReply={() => handleReply(para)}
+                        onAiRecommend={() => handleAiRecommend(para)}
+                      >
+                        <p className="message__text">{para}</p>
+                      </HoverableTextBlock>
+                    ))}
+                    {message.content.sections && message.content.sections.map((section, idx) => (
+                      <HoverableTextBlock
+                        key={idx}
+                        onReply={() => handleReply(section.text)}
+                        onAiRecommend={() => handleAiRecommend(section.text)}
+                      >
+                        <div>
                           <h4 className="message__heading">{section.title}</h4>
                           <p className="message__text">{section.text}</p>
                           {section.bullets && (
@@ -145,58 +202,58 @@ export default function MainContent() {
                             </ul>
                           )}
                         </div>
-                      ))
-                      )}
-                      <div className="message__actions">
-                        <IconButton
-                          kind="ghost"
-                          size="sm"
-                          label="Like"
-                          align="bottom"
-                        >
-                          <ThumbsUp size={16} />
-                        </IconButton>
-                        <IconButton
+                      </HoverableTextBlock>
+                    ))}
+                    <div className="message__actions">
+                      <IconButton
+                      kind="ghost"
+                      size="sm"
+                      label="Like"
+                      align="bottom"
+                      >
+                        <ThumbsUp size={16} />
+                      </IconButton>
+                      <IconButton
                           kind="ghost"
                           size="sm"
                           label="Dislike"
                           align="bottom"
                         >
                           <ThumbsDown size={16} />
-                        </IconButton>
-                        <IconButton
+                      </IconButton>
+                      <IconButton
                         kind="ghost"
                         size="sm"
                         label={copiedMessage === message.id ? "Copied!" : "Copy"}
                         align="bottom"
                         onClick={() => handleCopy(message.id, message.content)}
-                        >
+                      >
                         {copiedMessage === message.id ? (
                           <Checkmark size={16} />
                         ) : (
                           <Copy size={16} />
                         )}
                       </IconButton>
-                        <IconButton
-                          kind="ghost"
-                          size="sm"
-                          label="Share"
-                          align="bottom"
-                        >
-                          <Share size={16} />
-                        </IconButton>
-                      </div>
-                    </Stack>
-                  )}
-                </div>
-
-                {message.type === 'user' && (
-                  <div className="message__avatar message__avatar--user">
-                    <img src={message.avatar} alt="User" />
-                  </div>
+                      <IconButton
+                      kind="ghost"
+                      size="sm"
+                      label="Share"
+                      align="bottom"
+                      >
+                        <Share size={16} />
+                      </IconButton>
+                    </div>
+                  </Stack>
                 )}
               </div>
-            ))
+
+              {message.type === 'user' && (
+                <div className="message__avatar message__avatar--user">
+                  <img src={message.avatar} alt="User" />
+                </div>
+              )}
+            </div>
+          ))
           }
           <div ref={messagesEndRef} />
         </Stack>
@@ -217,9 +274,9 @@ export default function MainContent() {
           <p className="cds--label chat-input__helper">Nested conversation are on</p>
           <div className="chat-input__submit">
             <Button
-              kind="primary"
-              size="md"
-              onClick={handleSubmit}
+            kind="primary"
+            size="md"
+            onClick={handleSubmit}
             >
               Ask Gibraltar
             </Button>
