@@ -17,6 +17,7 @@ import {
 } from '@carbon/icons-react';
 import './mainContent.scss';
 import { botResponses } from './botResponses';
+import { useChat } from '../context/ChatContext';
 
 const getRandomResponse = () => {
   const randomIndex = Math.floor(Math.random() * botResponses.length);
@@ -41,7 +42,7 @@ const formatMessageForCopy = (content) => {
       }
     });
   }
-
+  
   return text.trim();
 };
 
@@ -84,23 +85,10 @@ function HoverableTextBlock({ children, onReply, onAiRecommend }) {
 }
 
 export default function MainContent() {
+  const { messages, activeChatId, addMessages, updateChatName } = useChat();
   const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useState([]);
-  const messagesEndRef = useRef(null);
+ const messagesEndRef = useRef(null); 
   const [copiedMessage, setCopiedMessage] = useState(null);
-
-  useEffect(() => {
-    const initialBotMessage = {
-      id: Date.now(),
-      type: 'bot',
-      content: {
-        paragraphs: ['Hi user what do you want to learn?'],
-        sections: []
-      },
-      avatar: 'https://static.thenounproject.com/png/2781734-512.png'
-    };
-    setMessages([initialBotMessage]);
-  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -108,7 +96,11 @@ export default function MainContent() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, activeChatId]);
+
+  useEffect(() => {
+    setInputValue('');
+  }, [activeChatId]);
 
   const handleCopy = async (messageId, content) => {
     const textToCopy = formatMessageForCopy(content);
@@ -147,7 +139,12 @@ export default function MainContent() {
         avatar: 'https://static.thenounproject.com/png/2781734-512.png'
       };
 
-      setMessages(prevMessages => [...prevMessages, userMessage, botMessage]);
+      const userMessages = messages.filter(m => m.type === 'user');
+      if (userMessages.length === 0) {
+        updateChatName(activeChatId, inputValue.trim());
+      }
+
+      addMessages([userMessage, botMessage]);
       setInputValue('');
     }
   };
@@ -219,7 +216,7 @@ export default function MainContent() {
                           label="Dislike"
                           align="bottom"
                         >
-                          <ThumbsDown size={16} />
+                        <ThumbsDown size={16} />
                       </IconButton>
                       <IconButton
                         kind="ghost"
@@ -253,8 +250,7 @@ export default function MainContent() {
                 </div>
               )}
             </div>
-          ))
-          }
+          ))}
           <div ref={messagesEndRef} />
         </Stack>
       </Layer>

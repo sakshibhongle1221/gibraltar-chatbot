@@ -16,30 +16,19 @@ import {
   HeaderSideNavItems
 } from '@carbon/react';
 import { Share, Chat } from '@carbon/icons-react';
+import { useChat } from '../context/ChatContext';
 
 export default function AppHeader() {
-  const [activePage, setActivePage] = React.useState('1');
-
-  const [chats, setChats] = React.useState([
-    { id: '1', name: 'Chat 3' },
-    { id: '2', name: 'Chat 2' },
-    { id: '3', name: 'Chat 1' }
-  ]);
+  const { chats, activeChatId, createNewChat, switchChat } = useChat();
 
   const handleNewChat = (e) => {
     e.preventDefault();
+    createNewChat();
+  };
 
-    const newChatId = `chat-${Date.now()}`;
-    const newChatName = `Chat ${chats.length + 1}`;
-
-    const newChat = {
-      id: newChatId,
-      name: newChatName
-    };
-
-    setChats(prevChats => [newChat,...prevChats]);
-
-    setActivePage(newChatId);
+  const handleChatClick = (e, chatId) => {
+    e.preventDefault();
+    switchChat(chatId);
   };
 
   return (
@@ -95,11 +84,8 @@ export default function AppHeader() {
               <SideNavLink
                 key={chat.id}
                 href="#"
-                isActive={activePage === chat.id}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActivePage(chat.id);
-                }}
+                isActive={activeChatId === chat.id}
+                onClick={(e) => handleChatClick(e, chat.id)}
               >
                 {chat.name}
               </SideNavLink>
