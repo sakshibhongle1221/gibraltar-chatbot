@@ -272,6 +272,7 @@ export default function MainContent() {
             <Button
             kind="primary"
             size="md"
+            style={{ paddingLeft: '16px', paddingRight: '16px' }}
             onClick={handleSubmit}
             >
               Ask Gibraltar

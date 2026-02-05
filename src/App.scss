@@ -1,0 +1,15 @@
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/theme' as *;
+
+.toast-container {
+  position: fixed;
+  top: $spacing-09; 
+  right: $spacing-05;
+  z-index: 9999;
+
+  .cds--toast-notification {
+    margin-bottom: $spacing-03;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
