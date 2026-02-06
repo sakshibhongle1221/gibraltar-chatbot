@@ -48,9 +48,17 @@ export default function AppHeader() {
           Gibraltar
         </HeaderName>
         <HeaderNavigation aria-label="Main navigation">
-          <HeaderMenuItem href="https://github.com/sakshibhongle1221/gibraltar-chatbot.git">Source Code</HeaderMenuItem>
-          <HeaderMenuItem href="https://github.com/sakshibhongle1221">My Github</HeaderMenuItem>
-          <HeaderMenuItem href="https://drive.google.com/drive/folders/1PoGiXsmaDdrHvDwfDZXgnQQdkR52sy1C">Resume</HeaderMenuItem>
+          <HeaderMenuItem href="https://github.com/sakshibhongle1221/gibraltar-chatbot.git"
+          target="_blank"
+          rel="noopener noreferrer">Source Code</HeaderMenuItem>
+          <HeaderMenuItem href="https://github.com/sakshibhongle1221"
+          target="_blank"
+          rel="noopener noreferrer"
+          >My Github</HeaderMenuItem>
+          <HeaderMenuItem href="https://drive.google.com/drive/folders/1PoGiXsmaDdrHvDwfDZXgnQQdkR52sy1C"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Resume</HeaderMenuItem>
         </HeaderNavigation>
         <HeaderGlobalBar>
           <HeaderGlobalAction aria-label="Share" tooltipAlignment="end">
@@ -65,9 +73,18 @@ export default function AppHeader() {
         >
           <SideNavItems>
             <HeaderSideNavItems hasDivider={true}>
-              <HeaderMenuItem href="https://github.com/sakshibhongle1221/gibraltar-chatbot.git">Source Code</HeaderMenuItem>
-              <HeaderMenuItem href="https://github.com/sakshibhongle1221">My Github</HeaderMenuItem>
-              <HeaderMenuItem href="https://drive.google.com/drive/folders/1PoGiXsmaDdrHvDwfDZXgnQQdkR52sy1C">Resume</HeaderMenuItem>
+              <HeaderMenuItem href="https://github.com/sakshibhongle1221/gibraltar-chatbot.git"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Source Code</HeaderMenuItem>
+              <HeaderMenuItem href="https://github.com/sakshibhongle1221"
+              target="_blank"
+              rel="noopener noreferrer"
+              >My Github</HeaderMenuItem>
+              <HeaderMenuItem href="https://drive.google.com/drive/folders/1PoGiXsmaDdrHvDwfDZXgnQQdkR52sy1C"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Resume</HeaderMenuItem>
             </HeaderSideNavItems>
 
             <SideNavLink 
