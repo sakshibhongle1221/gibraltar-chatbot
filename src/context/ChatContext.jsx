@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const ChatContext = createContext();
 
+const MAX_CHATS = 4;
 const getInitialBotMessage = () => ({
   id: Date.now(),
   type: 'bot',
@@ -45,17 +46,30 @@ export function ChatProvider({ children }) {
   const [chats, setChats] = useState([
     { 
       id: '1', 
-      name: 'DemoChat 1',
+      name: 'Basics of Flutter',
       messages: [flutterUserMessage, flutterInitialMessage]
     }
   ]);
-
+  
   const [activeChatId, setActiveChatId] = useState('1');
+  const [toastMessage, setToastMessage] = useState(null);
 
   const activeChat = chats.find(chat => chat.id === activeChatId);
   const messages = activeChat?.messages || [];
 
+  const showToast = useCallback((message, kind = 'error') => {
+    setToastMessage({ message, kind });
+  }, []);
+
+  const clearToast = useCallback(() => {
+    setToastMessage(null);
+  }, []);
+
   const createNewChat = useCallback(() => {
+    if (chats.length >= MAX_CHATS) {
+      showToast(`Maximum conversation limit reached (${MAX_CHATS} chats).`, 'error');
+      return null;
+    }
     const newChatId = `chat-${Date.now()}`;
     const newChat = {
       id: newChatId,
@@ -67,7 +81,7 @@ export function ChatProvider({ children }) {
     setActiveChatId(newChatId);
 
     return newChatId;
-  }, [chats.length]);
+  }, [chats.length, showToast]);
 
   const switchChat = useCallback((chatId) => {
     setActiveChatId(chatId);
@@ -100,7 +114,10 @@ export function ChatProvider({ children }) {
     createNewChat,
     switchChat,
     addMessages,
-    updateChatName
+    updateChatName,
+    toastMessage,
+    clearToast,
+    maxChats: MAX_CHATS
   };
 
   return (
