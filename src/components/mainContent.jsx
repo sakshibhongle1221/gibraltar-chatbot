@@ -42,24 +42,57 @@ const formatMessageForCopy = (content) => {
       }
     });
   }
-  
+
   return text.trim();
 };
 
 function HoverableTextBlock({ children, onReply, onAiRecommend }) {
   const [isHovered, setIsHovered] = useState(false);
+  const timeoutRef = useRef(null);
+  const blockRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = (e) => {
+    const relatedTarget = e.relatedTarget;
+
+    if (blockRef.current && blockRef.current.contains(relatedTarget)) {
+      return;
+    }
+    timeoutRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 100);
+  };
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div
+      ref={blockRef}
       className={`hoverable-block ${isHovered ? 'hoverable-block--active' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="hoverable-block__content">
         {children}
       </div>
       {isHovered && (
-        <div className="hoverable-block__actions">
+        <div 
+          className="hoverable-block__actions"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <IconButton
             kind="ghost"
             size="sm"
@@ -87,7 +120,7 @@ function HoverableTextBlock({ children, onReply, onAiRecommend }) {
 export default function MainContent() {
   const { messages, activeChatId, addMessages, updateChatName } = useChat();
   const [inputValue, setInputValue] = useState('');
- const messagesEndRef = useRef(null); 
+    const messagesEndRef = useRef(null);
   const [copiedMessage, setCopiedMessage] = useState(null);
 
   const scrollToBottom = () => {
@@ -121,7 +154,7 @@ export default function MainContent() {
   };
 
   const handleAiRecommend = () => {
-    
+
   };
 
   const handleSubmit = () => {
@@ -211,11 +244,11 @@ export default function MainContent() {
                         <ThumbsUp size={16} />
                       </IconButton>
                       <IconButton
-                          kind="ghost"
-                          size="sm"
-                          label="Dislike"
-                          align="bottom"
-                        >
+                      kind="ghost"
+                      size="sm"
+                      label="Dislike"
+                      align="bottom"
+                      >
                         <ThumbsDown size={16} />
                       </IconButton>
                       <IconButton
