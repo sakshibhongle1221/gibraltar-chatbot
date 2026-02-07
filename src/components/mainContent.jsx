@@ -67,7 +67,7 @@ function HoverableTextBlock({ children, onReply, onAiRecommend }) {
     }
     timeoutRef.current = setTimeout(() => {
       setIsHovered(false);
-    }, 100);
+    }, 10);
   };
   useEffect(() => {
     return () => {
