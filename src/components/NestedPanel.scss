@@ -1,0 +1,239 @@
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/type' as *;
+@use '@carbon/react/scss/theme' as *;
+@use '@carbon/react/scss/colors' as *;
+
+.nested-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  padding: 0 !important;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    padding: 0 !important;
+  }
+
+  &__messages {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: $spacing-05;
+    padding-bottom: 0px;
+  }
+
+  &__input {
+    flex-shrink: 0;
+    padding: $spacing-06;
+
+    .cds--text-area__wrapper {
+      textarea {
+        padding: $spacing-05;
+        background-color: $field-01;
+        min-height: 5rem;
+      }
+    }
+  }
+
+  &__helper {
+    @include type-style('helper-text-01');
+    color: $text-helper;
+    margin: $spacing-03 0;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-03;
+    margin-top: $spacing-04;
+  }
+}
+
+.nested-message {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-05;
+  width: 100%;
+
+  &--user {
+    justify-content: flex-end;
+    padding-top: $spacing-03;
+    padding-right: $spacing-03;
+  }
+
+  &--bot {
+    justify-content: flex-start;
+    padding-right: 35px;
+  }
+
+  &__avatar {
+    width: $spacing-06;
+    height: $spacing-06;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &--bot {
+      width: $spacing-06;
+      height: $spacing-06;
+      margin-top: $spacing-02;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    max-width: calc(100% - 4rem);
+    overflow: visible;
+  }
+
+  &--user .nested-message__content {
+    flex: unset;
+    text-align: right;
+    max-width: 70%;
+  }
+
+  &__text {
+    @include type-style('body-01');
+    color: $text-primary;
+    margin: 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+  }
+
+  &--user .nested-message__text {
+    color: $text-primary;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  &__heading {
+    @include type-style('body-01');
+    color: $text-primary;
+    margin-bottom: $spacing-03;
+  }
+
+  &__list {
+    padding-left: $spacing-05;
+    margin: $spacing-03 0;
+    list-style-type: disc;
+
+    li {
+      @include type-style('body-01');
+      color: $text-primary;
+      margin-bottom: $spacing-04;
+      line-height: 1.6;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-02;
+
+    .cds--icon-button {
+      color: $icon-secondary;
+
+      &:hover {
+        color: $icon-primary;
+      }
+    }
+  }
+}
+
+.nested-context {
+  display: flex;
+  gap: $spacing-04;
+  padding: $spacing-05;
+  background-color: $layer-02;
+  border-radius: 4px;
+  margin-bottom: $spacing-05;
+
+  &__avatar {
+    width: $spacing-06;
+    height: $spacing-06;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__text {
+    @include type-style('body-01');
+    color: $text-primary;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.nested-hoverable-block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-03;
+  padding: $spacing-03;
+  margin: 0 (-$spacing-03);
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -$spacing-10;
+    bottom: 0;
+    width: $spacing-10;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__actions {
+    position: absolute;
+    right: -$spacing-09;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-02;
+    padding: $spacing-02;
+    background-color: $layer-01;
+    border: 1px solid $border-subtle-01;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+
+    pointer-events: auto;
+
+    .cds--icon-button {
+      color: $icon-secondary;
+
+      &:hover {
+        color: $icon-primary;
+        background-color: $layer-hover-01;
+      }
+    }
+  }
+
+  &--active {
+    background-color: $layer-selected-01;
+  }
+}

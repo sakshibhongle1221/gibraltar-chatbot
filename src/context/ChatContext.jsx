@@ -54,6 +54,10 @@ export function ChatProvider({ children }) {
   const [activeChatId, setActiveChatId] = useState('1');
   const [toastMessage, setToastMessage] = useState(null);
 
+  const [nestedConversation, setNestedConversation] = useState(null);
+
+  const [storedNests, setStoredNests] = useState({});
+
   const activeChat = chats.find(chat => chat.id === activeChatId);
   const messages = activeChat?.messages || [];
 
@@ -63,6 +67,54 @@ export function ChatProvider({ children }) {
 
   const clearToast = useCallback(() => {
     setToastMessage(null);
+  }, []);
+
+  const getNestKey = useCallback((messageId, contextText) => {
+    return `${activeChatId}-${messageId}-${contextText.substring(0, 50)}`;
+  }, [activeChatId]);
+
+  const hasNest = useCallback((messageId, contextText) => {
+    const key = getNestKey(messageId, contextText);
+    return !!storedNests[key];
+  }, [getNestKey, storedNests]);
+
+  const getStoredNest = useCallback((messageId, contextText) => {
+    const key = getNestKey(messageId, contextText);
+    return storedNests[key] || null;
+  }, [getNestKey, storedNests]);
+
+  const openNestedConversation = useCallback((contextText, messageId) => {
+    const key = getNestKey(messageId, contextText);
+    const existingNest = storedNests[key];
+
+    setNestedConversation({
+      contextText,
+      messageId,
+      key,
+      messages: existingNest?.messages || []
+    });
+  }, [getNestKey, storedNests]);
+
+  const closeNestedConversation = useCallback(() => {
+    setNestedConversation(null);
+  }, []);
+
+  const addNestedMessage = useCallback((newMessages) => {
+    setNestedConversation(prev => {
+      const updatedMessages = [...prev.messages, ...newMessages];
+      setStoredNests(prevStored => ({
+        ...prevStored,
+        [prev.key]: {
+          contextText: prev.contextText,
+          messageId: prev.messageId,
+          messages: updatedMessages
+        }
+      }));
+      return {
+        ...prev,
+        messages: updatedMessages
+      };
+    });
   }, []);
 
   const createNewChat = useCallback(() => {
@@ -79,13 +131,25 @@ export function ChatProvider({ children }) {
 
     setChats(prevChats => [newChat, ...prevChats]);
     setActiveChatId(newChatId);
+    setNestedConversation(null);
 
     return newChatId;
   }, [chats.length, showToast]);
 
   const switchChat = useCallback((chatId) => {
+    if (nestedConversation) {
+      setStoredNests(prev => ({
+        ...prev,
+        [nestedConversation.key]: {
+          contextText: nestedConversation.contextText,
+          messageId: nestedConversation.messageId,
+          messages: nestedConversation.messages
+        }
+      }));
+    }
     setActiveChatId(chatId);
-  }, []);
+    setNestedConversation(null);
+  }, [nestedConversation]);
 
   const addMessages = useCallback((newMessages) => {
     setChats(prevChats => 
@@ -117,7 +181,13 @@ export function ChatProvider({ children }) {
     updateChatName,
     toastMessage,
     clearToast,
-    maxChats: MAX_CHATS
+    maxChats: MAX_CHATS,
+    nestedConversation,
+    openNestedConversation,
+    closeNestedConversation,
+    addNestedMessage,
+    hasNest,
+    getStoredNest
   };
 
   return (

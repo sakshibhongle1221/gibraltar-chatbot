@@ -7,32 +7,57 @@
 .cds--content {
   padding-bottom: 0px !important;
   padding-top: 0px !important;
+  padding-right: 0px !important;
 }
+
+.chat-wrapper {
+  display: flex;
+  height: calc(100vh - 3rem);
+  overflow: hidden;
+
+  @media (min-width: 66rem) {
+    margin-left: 224px;
+  }
+}
+
 .chat-content {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 3rem);
-  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+  transition: all 0.3s ease;
+
+  &--with-nested {
+    flex: 1;
+    max-width: 50%;
+  }
+}
+
+.nested-chat-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 50%;
+  min-width: 0;
+  border-left: 1px solid $border-subtle-01;
+  transition: all 0.3s ease;
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: $spacing-06;
+  padding: $spacing-05;
+  padding-bottom: 0px;
 
-  @media (min-width: 66rem) {
-    padding-left: 224px;
-    padding-right: 224px;
-  }
 }
 
 .hoverable-block {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: $spacing-03;
-  padding: $spacing-03;
+  padding: $spacing-02;
   margin: 0 (-$spacing-03);
   border-radius: 4px;
   transition: background-color 0.15s ease;
@@ -70,16 +95,24 @@
       color: $icon-secondary;
 
       &:hover {
-        color: $icon-primary;
+        color: $icon-secondary;
         background-color: $layer-hover-01;
       }
     }
   }
 
-  &--active {
-    background-color: $layer-selected-01;
+  &__nest-btn {
+    margin-top: $spacing-03;
+    width: fit-content;
+  }
+
+  &--nested-active {
+    background-color: $layer-active-01;
+    padding: $spacing-03;
+    border-radius: 4px;
   }
 }
+
 .message {
   display: flex;
   align-items: flex-start;
@@ -87,6 +120,10 @@
   max-width: 700px;
   width: 100%;
   margin: 0 auto;
+
+  .chat-content--with-nested & {
+    max-width: 100%;
+  }
 
   &--user {
     justify-content: flex-end;
@@ -96,7 +133,11 @@
 
   &--bot {
     justify-content: flex-start;
-    padding-right: $spacing-08;
+    padding-right: 35px;
+
+    .chat-content--with-nested & {
+      padding-right: 35px;
+    }
   }
 
   &__avatar {
@@ -122,6 +163,7 @@
   &__content {
     flex: 1;
     max-width: calc(100% - 4rem);
+    overflow: visible;
   }
 
   &--user .message__content {
@@ -133,7 +175,6 @@
   &__text {
     @include type-style('body-01');
     color: $text-primary;
-    margin: 0;
     word-wrap: break-word;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -161,7 +202,7 @@
     li {
       @include type-style('body-01');
       color: $text-primary;
-      margin-bottom: $spacing-04;
+      margin-bottom: $spacing-03;
       line-height: 1.6;
     }
   }
@@ -182,16 +223,15 @@
 
 .chat-input {
   flex-shrink: 0;
-  padding: $spacing-05;
-
-  @media (min-width: 66rem) {
-    margin-left: 224px;
-    margin-right: 224px;
-  }
+  padding: $spacing-06;
 
   &__container {
     max-width: 700px;
     margin: 0 auto;
+
+    .chat-content--with-nested & {
+      max-width: 100%;
+    }
   }
 
   .cds--text-area__wrapper {
@@ -204,7 +244,8 @@
 
   &__helper {
     @include type-style('helper-text-01');
-    margin: $spacing-03 0;
+    margin-top: $spacing-03;
+    margin-bottom: 0;
     color: $text-helper;
   }
 
