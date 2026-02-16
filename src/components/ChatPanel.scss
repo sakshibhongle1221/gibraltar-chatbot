@@ -1,34 +1,63 @@
 @use '@carbon/react/scss/spacing' as *;
 @use '@carbon/react/scss/type' as *;
-@use '@carbon/react/scss/theme' as *;
 @use '@carbon/react/scss/colors' as *;
+@use '@carbon/react/scss/theme' as *;
 
-.nested-panel {
+.chat-panel {
   display: flex;
   flex-direction: column;
   flex: 1;
   height: 100%;
-  padding: 0 !important;
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    height: 100%;
-    padding: 0 !important;
-  }
+  min-width: 0;
 
   &__messages {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: $spacing-05;
+    padding-right: $spacing-05;
+    padding-left: $spacing-05;
+    padding-top: $spacing-06;
+    padding-bottom: 0;
+  }
+
+  &__context {
+    display: flex;
+    gap: $spacing-04;
+    background-color: $layer-02;
+    padding-top: 8px;
+    padding-right: 8px;
+    padding-left: 0px;
     padding-bottom: 0px;
+
+    &-avatar {
+      width: $spacing-06;
+      height: $spacing-06;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &-text {
+      @include type-style('body-01');
+      color: $text-primary;
+      margin: 0;
+      line-height: 1.5;
+    }
   }
 
   &__input {
     flex-shrink: 0;
     padding: $spacing-06;
+
+    &-container {
+      max-width: 100%;
+    }
 
     .cds--text-area__wrapper {
       textarea {
@@ -41,8 +70,9 @@
 
   &__helper {
     @include type-style('helper-text-01');
+    margin-top: $spacing-03;
+    margin-bottom: 0;
     color: $text-helper;
-    margin: $spacing-03 0;
   }
 
   &__actions {
@@ -53,11 +83,12 @@
   }
 }
 
-.nested-message {
+.chat-panel-message {
   display: flex;
   align-items: flex-start;
   gap: $spacing-05;
   width: 100%;
+  
 
   &--user {
     justify-content: flex-end;
@@ -84,8 +115,6 @@
     }
 
     &--bot {
-      width: $spacing-06;
-      height: $spacing-06;
       margin-top: $spacing-02;
     }
   }
@@ -96,7 +125,7 @@
     overflow: visible;
   }
 
-  &--user .nested-message__content {
+  &--user .chat-panel-message__content {
     flex: unset;
     text-align: right;
     max-width: 70%;
@@ -110,13 +139,6 @@
     word-break: break-word;
     overflow-wrap: break-word;
     white-space: pre-wrap;
-  }
-
-  &--user .nested-message__text {
-    color: $text-primary;
-    word-wrap: break-word;
-    word-break: break-word;
-    overflow-wrap: break-word;
   }
 
   &__heading {
@@ -133,7 +155,7 @@
     li {
       @include type-style('body-01');
       color: $text-primary;
-      margin-bottom: $spacing-04;
+      margin-bottom: $spacing-03;
       line-height: 1.6;
     }
   }
@@ -152,44 +174,13 @@
   }
 }
 
-.nested-context {
-  display: flex;
-  gap: $spacing-04;
-  padding: $spacing-05;
-  background-color: $layer-02;
-  border-radius: 4px;
-  margin-bottom: $spacing-05;
-
-  &__avatar {
-    width: $spacing-06;
-    height: $spacing-06;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  &__text {
-    @include type-style('body-01');
-    color: $text-primary;
-    margin: 0;
-    line-height: 1.5;
-  }
-}
-
-.nested-hoverable-block {
+.hoverable-block {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: $spacing-03;
-  padding: $spacing-03;
+  padding: $spacing-02;
   margin: 0 (-$spacing-03);
-  border-radius: 4px;
   transition: background-color 0.15s ease;
 
   &::after {
@@ -220,7 +211,6 @@
     border-radius: 4px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     z-index: 10;
-
     pointer-events: auto;
 
     .cds--icon-button {
@@ -233,7 +223,17 @@
     }
   }
 
+  &__nest-btn {
+    margin-top: $spacing-03;
+    width: fit-content;
+  }
+
   &--active {
     background-color: $layer-selected-01;
+  }
+
+  &--nested-active {
+    background-color: $layer-active-01;
+    padding: $spacing-03;
   }
 }

@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 const ChatContext = createContext();
 
 const MAX_CHATS = 4;
+const MAX_NEST_DEPTH = 3;
+
 const getInitialBotMessage = () => ({
   id: Date.now(),
   type: 'bot',
@@ -53,8 +55,7 @@ export function ChatProvider({ children }) {
   
   const [activeChatId, setActiveChatId] = useState('1');
   const [toastMessage, setToastMessage] = useState(null);
-
-  const [nestedConversation, setNestedConversation] = useState(null);
+  const [nestedStack, setNestedStack] = useState([]);
 
   const [storedNests, setStoredNests] = useState({});
 
@@ -69,51 +70,84 @@ export function ChatProvider({ children }) {
     setToastMessage(null);
   }, []);
 
-  const getNestKey = useCallback((messageId, contextText) => {
-    return `${activeChatId}-${messageId}-${contextText.substring(0, 50)}`;
+  const getNestKey = useCallback((depth, messageId, contextText, parentKey = null) => {
+    const baseKey = parentKey || activeChatId;
+    return `${baseKey}-depth${depth}-${messageId}-${contextText.substring(0, 50)}`;
   }, [activeChatId]);
 
-  const hasNest = useCallback((messageId, contextText) => {
-    const key = getNestKey(messageId, contextText);
+  const hasNest = useCallback((depth, messageId, contextText, parentKey = null) => {
+    const key = getNestKey(depth, messageId, contextText, parentKey);
     return !!storedNests[key];
   }, [getNestKey, storedNests]);
 
-  const getStoredNest = useCallback((messageId, contextText) => {
-    const key = getNestKey(messageId, contextText);
+  const getStoredNest = useCallback((depth, messageId, contextText, parentKey = null) => {
+    const key = getNestKey(depth, messageId, contextText, parentKey);
     return storedNests[key] || null;
   }, [getNestKey, storedNests]);
 
-  const openNestedConversation = useCallback((contextText, messageId) => {
-    const key = getNestKey(messageId, contextText);
+  const openNestedConversation = useCallback((contextText, messageId, depth = 0, parentKey = null) => {
+    if (depth >= MAX_NEST_DEPTH - 1) {
+      showToast(`Maximum nesting depth reached (${MAX_NEST_DEPTH} levels).`, 'warning');
+      return;
+    }
+
+    const key = getNestKey(depth, messageId, contextText, parentKey);
     const existingNest = storedNests[key];
 
-    setNestedConversation({
-      contextText,
-      messageId,
-      key,
-      messages: existingNest?.messages || []
+    setNestedStack(prev => {
+      const newStack = prev.slice(0, depth);
+      return [...newStack, {
+        contextText,
+        messageId,
+        key,
+        depth,
+        parentKey,
+        messages: existingNest?.messages || []
+      }];
     });
-  }, [getNestKey, storedNests]);
+  }, [getNestKey, storedNests, showToast]);
 
-  const closeNestedConversation = useCallback(() => {
-    setNestedConversation(null);
+  const closeNestedConversation = useCallback((depth = 0) => {
+    setNestedStack(prev => {
+      const nestsToSave = prev.slice(depth);
+      nestsToSave.forEach(nest => {
+        if (nest.messages.length > 0) {
+          setStoredNests(stored => ({
+            ...stored,
+            [nest.key]: {
+              contextText: nest.contextText,
+              messageId: nest.messageId,
+              parentKey: nest.parentKey,
+              messages: nest.messages
+            }
+          }));
+        }
+      });
+      return prev.slice(0, depth);
+    });
   }, []);
 
-  const addNestedMessage = useCallback((newMessages) => {
-    setNestedConversation(prev => {
-      const updatedMessages = [...prev.messages, ...newMessages];
-      setStoredNests(prevStored => ({
-        ...prevStored,
-        [prev.key]: {
-          contextText: prev.contextText,
-          messageId: prev.messageId,
+  const addNestedMessage = useCallback((newMessages, depth) => {
+    setNestedStack(prev => {
+      const newStack = [...prev];
+      if (newStack[depth]) {
+        const updatedMessages = [...newStack[depth].messages, ...newMessages];
+        newStack[depth] = {
+          ...newStack[depth],
           messages: updatedMessages
-        }
-      }));
-      return {
-        ...prev,
-        messages: updatedMessages
-      };
+        };
+
+        setStoredNests(stored => ({
+          ...stored,
+          [newStack[depth].key]: {
+            contextText: newStack[depth].contextText,
+            messageId: newStack[depth].messageId,
+            parentKey: newStack[depth].parentKey,
+            messages: updatedMessages
+          }
+        }));
+      }
+      return newStack;
     });
   }, []);
 
@@ -131,25 +165,29 @@ export function ChatProvider({ children }) {
 
     setChats(prevChats => [newChat, ...prevChats]);
     setActiveChatId(newChatId);
-    setNestedConversation(null);
+    setNestedStack([]);
 
     return newChatId;
   }, [chats.length, showToast]);
 
   const switchChat = useCallback((chatId) => {
-    if (nestedConversation) {
-      setStoredNests(prev => ({
-        ...prev,
-        [nestedConversation.key]: {
-          contextText: nestedConversation.contextText,
-          messageId: nestedConversation.messageId,
-          messages: nestedConversation.messages
-        }
-      }));
-    }
+    nestedStack.forEach(nest => {
+      if (nest.messages.length > 0) {
+        setStoredNests(stored => ({
+          ...stored,
+          [nest.key]: {
+            contextText: nest.contextText,
+            messageId: nest.messageId,
+            parentKey: nest.parentKey,
+            messages: nest.messages
+          }
+        }));
+      }
+    });
+    
     setActiveChatId(chatId);
-    setNestedConversation(null);
-  }, [nestedConversation]);
+    setNestedStack([]);
+  }, [nestedStack]);
 
   const addMessages = useCallback((newMessages) => {
     setChats(prevChats => 
@@ -171,6 +209,9 @@ export function ChatProvider({ children }) {
     );
   }, []);
 
+  const currentDepth = nestedStack.length;
+  const canNestDeeper = currentDepth < MAX_NEST_DEPTH - 1;
+
   const value = {
     chats,
     activeChatId,
@@ -182,12 +223,16 @@ export function ChatProvider({ children }) {
     toastMessage,
     clearToast,
     maxChats: MAX_CHATS,
-    nestedConversation,
+    maxNestDepth: MAX_NEST_DEPTH,
+    nestedStack,
+    currentDepth,
+    canNestDeeper,
     openNestedConversation,
     closeNestedConversation,
     addNestedMessage,
     hasNest,
-    getStoredNest
+    getStoredNest,
+    getNestKey
   };
 
   return (
